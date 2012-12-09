@@ -28,8 +28,12 @@ class DeviseController < Devise.parent_controller.constantize
     devise_mapping.to
   end
 
+  def devise_permitted(resource, whitelist=[:email, :password, :password_confirmation])
+    resource.params_whitelist = whitelist
+  end
+
   def resource_params
-    params[resource_name]
+    params.require(resource_name.to_sym).permit(resource.params_whitelist) if params[resource_name]
   end
 
   # Returns a signed in resource from session (if one exists)
